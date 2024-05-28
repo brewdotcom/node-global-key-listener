@@ -6,4 +6,6 @@ export type IX11Config = {
     onError?: {(errorCode: number | null): void};
     /** Path to server executable */
     serverPath?: string
+    /** Title to use when prompting for perm */
+    title?: string;
 };

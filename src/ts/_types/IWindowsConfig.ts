@@ -6,4 +6,6 @@ export type IWindowsConfig = {
     onError?: { (errorCode: number): void }
     /** Path to server executable */
     serverPath?: string
+    /** Title to use when prompting for perm */
+    title?: string;
 };

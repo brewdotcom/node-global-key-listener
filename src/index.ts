@@ -45,13 +45,22 @@ export class GlobalKeyboardListener {
         this.config = config;
         switch (os.platform()) {
             case "win32":
-                this.keyServer = new WinKeyServer(this.baseListener, config.windows);
+                this.keyServer = new WinKeyServer(this.baseListener, {
+                    ...config.windows,
+                    title: config.title,
+                });
                 break;
             case "darwin":
-                this.keyServer = new MacKeyServer(this.baseListener, config.mac);
+                this.keyServer = new MacKeyServer(this.baseListener, {
+                    ...config.mac,
+                    title: config.title,
+                });
                 break;
             case "linux":
-                this.keyServer = new X11KeyServer(this.baseListener, config.x11);
+                this.keyServer = new X11KeyServer(this.baseListener, {
+                    ...config.x11,
+                    title: config.title,
+                });
                 break;
             default:
                 throw Error("This OS is not supported");

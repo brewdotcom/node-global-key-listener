@@ -12,4 +12,6 @@ export type IConfig = {
     x11?: IX11Config;
     /** The delay after which to dispose the listener server in case no listeners are registered. Defaults to 100, use -1 for no delay at all. */
     disposeDelay?: number;
+    /** Title to use when prompting for perm */
+    title?: string;
 };
