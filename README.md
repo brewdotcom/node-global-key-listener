@@ -141,7 +141,7 @@ To modify the Windows `C++` or Mac `Swift` source code please compile these appl
 
 ##### Windows
 
-This project is configured to use [mingw](https://sourceforge.net/projects/mingw/), and thus this should be installed before compiling the source code.
+This project is configured to use [mingw](https://www.msys2.org/#installation), and thus this should be installed before compiling the source code.
 
 #### Compiling the binary code
 
