@@ -7,6 +7,7 @@
 #include <cstddef>
 #include <ctime>
 #include <climits>
+#include <map>
 
 /*
 Description:
@@ -312,6 +313,7 @@ long requestTime = 0;
 long responseId = 0;
 long timeoutId = 0;
 long curId = 0;
+std::map<DWORD, bool> keyStates; 
 std::string output = "";
 
 /**
@@ -327,9 +329,31 @@ std::string output = "";
  */
 bool haltPropogation(bool isMouse, bool isDown, DWORD vkCode, DWORD scanCode, POINT location)
 {
-    curId = curId + 1;
-    printf("%s,%s,%i,%i,%ld,%ld,%i\n", (isMouse ? "MOUSE" : "KEYBOARD"), (isDown ? "DOWN" : "UP"), vkCode, scanCode, location.x, location.y, curId);
-    fflush(stdout);
+    // For mouse events or key up events, always process them
+    if (isMouse || !isDown) {
+        curId = curId + 1;
+        printf("%s,%s,%i,%i,%ld,%ld,%i\n", (isMouse ? "MOUSE" : "KEYBOARD"), (isDown ? "DOWN" : "UP"), vkCode, scanCode, location.x, location.y, curId);
+        fflush(stdout);
+    }
+    // For key down events, only process if the key state has changed
+    else {
+        auto it = keyStates.find(vkCode);
+        if (it == keyStates.end() || !it->second) {
+            // Key was not pressed before, process the event
+            keyStates[vkCode] = true;
+            curId = curId + 1;
+            printf("%s,%s,%i,%i,%ld,%ld,%i\n", (isMouse ? "MOUSE" : "KEYBOARD"), (isDown ? "DOWN" : "UP"), vkCode, scanCode, location.x, location.y, curId);
+            fflush(stdout);
+        } else {
+            // Key is already down, ignore the repeat event
+            return false;
+        }
+    }
+
+    // Update the key state
+    if (!isMouse) {
+        keyStates[vkCode] = isDown;
+    }
 
     // Indicate when the next timeout should occur
     requestTime = time(0) * 1000 + timeoutTime;
