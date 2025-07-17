@@ -43,14 +43,9 @@ export class MacKeyServer implements IGlobalKeyServer {
                 INHERIT_PERMISSIONS: "1",
             },
             stdio: ["pipe", "pipe", "pipe"],
-            // Add these options to prevent dock icon
-            // processType: "utility",
             windowsHide: true,
-            // Add these macOS specific options
-            ...(process.platform === "darwin" ? {
-                detached: true,
-                stdio: ["pipe", "pipe", "pipe"],
-            } : {}),
+            // For mac os
+            detached: true,
         });
 
         if (this.config.onInfo) {
