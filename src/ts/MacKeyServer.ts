@@ -1,5 +1,5 @@
 import {IGlobalKeyServer} from "./_types/IGlobalKeyServer";
-import {ChildProcess, execFile} from "child_process";
+import {ChildProcess, execFile, spawn} from "child_process";
 import {IGlobalKeyListenerRaw} from "./_types/IGlobalKeyListenerRaw";
 import {IGlobalKeyEvent} from "./_types/IGlobalKeyEvent";
 import {MacGlobalKeyLookup} from "./_data/MacGlobalKeyLookup";
@@ -37,20 +37,32 @@ export class MacKeyServer implements IGlobalKeyServer {
 
         const serverPath = this.config.serverPath || Path.join(__dirname, sPath);
 
-        this.proc = execFile(serverPath);
-        if (this.config.onInfo)
+        this.proc = spawn(serverPath, [], {
+            env: {
+                ...process.env,
+                INHERIT_PERMISSIONS: "1",
+            },
+            stdio: ["pipe", "pipe", "pipe"],
+            windowsHide: true,
+            // For mac os
+            detached: true,
+        });
+
+        if (this.config.onInfo) {
             this.proc.stderr!.on("data", data => this.config.onInfo?.(data.toString()));
+        }
+
         const onError = this.config.onError;
-        if (onError)
+        if (onError) {
             this.proc.on("close", code => {
                 if (!this.restarting && this.running) onError(code);
             });
+        }
 
         this.proc.stdout!.on("data", data => {
             const events = this._getEventData(data);
             for (let {event, eventId} of events) {
                 const stopPropagation = !!this.listener(event);
-
                 this.proc.stdin!.write(`${stopPropagation ? "1" : "0"},${eventId}\n`);
             }
         });
