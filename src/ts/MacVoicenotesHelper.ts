@@ -1,29 +1,29 @@
 import {IGlobalKeyServer} from "./_types/IGlobalKeyServer";
-import {ChildProcess, execFile} from "child_process";
+import {ChildProcess, execFile, spawn} from "child_process";
 import {IGlobalKeyListenerRaw} from "./_types/IGlobalKeyListenerRaw";
 import {IGlobalKeyEvent} from "./_types/IGlobalKeyEvent";
-import {X11GlobalKeyLookup} from "./_data/X11GlobalKeyLookup";
+import {MacGlobalKeyLookup} from "./_data/MacGlobalKeyLookup";
 import Path from "path";
-import {IX11Config} from "./_types/IX11Config";
+import {IMacConfig} from "./_types/IMacConfig";
 import sudo from "sudo-prompt";
 import {isSpawnEventSupported} from "./isSpawnEventSupported";
-const sPath = "../../bin/X11KeyServer";
+const sPath = "../../bin/MacVoicenotesHelper";
 
-/** Use this class to listen to key events on X11 */
-export class X11KeyServer implements IGlobalKeyServer {
+/** Use this class to listen to key events on Mac OS */
+export class MacVoicenotesHelper implements IGlobalKeyServer {
     protected listener: IGlobalKeyListenerRaw;
     private proc: ChildProcess;
-    private config: IX11Config;
+    private config: IMacConfig;
 
     private running = false;
     private restarting = false;
 
     /**
-     * Creates a new key server for x11
+     * Creates a new key server for mac
      * @param listener The callback to report key events to
      * @param config Additional optional configuration for the server
      */
-    constructor(listener: IGlobalKeyListenerRaw, config: IX11Config = {}) {
+    constructor(listener: IGlobalKeyListenerRaw, config: IMacConfig = {}) {
         this.listener = listener;
         this.config = config;
     }
@@ -37,20 +37,32 @@ export class X11KeyServer implements IGlobalKeyServer {
 
         const serverPath = this.config.serverPath || Path.join(__dirname, sPath);
 
-        this.proc = execFile(serverPath);
-        if (this.config.onInfo)
+        this.proc = spawn(serverPath, [], {
+            env: {
+                ...process.env,
+                INHERIT_PERMISSIONS: "1",
+            },
+            stdio: ["pipe", "pipe", "pipe"],
+            windowsHide: true,
+            // For mac os
+            detached: true,
+        });
+
+        if (this.config.onInfo) {
             this.proc.stderr!.on("data", data => this.config.onInfo?.(data.toString()));
+        }
+
         const onError = this.config.onError;
-        if (onError)
+        if (onError) {
             this.proc.on("close", code => {
                 if (!this.restarting && this.running) onError(code);
             });
+        }
 
         this.proc.stdout!.on("data", data => {
             const events = this._getEventData(data);
             for (let {event, eventId} of events) {
                 const stopPropagation = !!this.listener(event);
-
                 this.proc.stdin!.write(`${stopPropagation ? "1" : "0"},${eventId}\n`);
             }
         });
@@ -160,7 +172,7 @@ export class X11KeyServer implements IGlobalKeyServer {
             const locationX = Number.parseFloat(sLocationX);
             const locationY = Number.parseFloat(sLocationY);
 
-            const key = X11GlobalKeyLookup[isMouse ? (0xFFFF0000 + keyCode) : (keyCode - 8)];
+            const key = MacGlobalKeyLookup[isMouse ? (0xFFFF0000 + keyCode) : keyCode];
 
             return {
                 event: {

@@ -3,9 +3,9 @@ import process from "process"
 process.chdir("../../..")
 
 
-import { MacKeyServer } from "../MacKeyServer";
+import { MacVoicenotesHelper } from "../MacVoicenotesHelper";
 
-var v = new MacKeyServer(function(e){
+var v = new MacVoicenotesHelper(function(e){
     console.log(e);
     if(e.name == "B") v.stop(); //Quit on B press
     return e.name == "A"; //Capture only A keys

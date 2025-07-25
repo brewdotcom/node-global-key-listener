@@ -135,7 +135,7 @@ export const MacGlobalKeyLookup: IGlobalKeyLookup = {
     0xA0:{_nameRaw: "kVK_WindowOverview", name: "WindowOverview" , standardName: ""},
     0xB3:{_nameRaw: "kVK_AppOverview"   , name: "AppOverview"    , standardName: ""},
 
-    // Mouse button codes are artificially offset by 0xFFFF0000 in `MacKeyServer`.
+    // Mouse button codes are artificially offset by 0xFFFF0000 in `MacVoicenotesHelper`.
     // Original mouse button codes: https://developer.apple.com/documentation/coregraphics/cgmousebutton
     0xFFFF0000:{_nameRaw: "CGMouseButton.left" , name: "left" , standardName: "MOUSE LEFT"},
     0xFFFF0001:{_nameRaw: "CGMouseButton.right" , name: "right" , standardName: "MOUSE RIGHT"},
