@@ -1,1 +1,1 @@
-c++ "src\bin\WinKeyServer\main.cpp" -o "bin\WinKeyServer.exe" -static
+c++ "src\bin\WinVoicenotesHelper\main.cpp" -o "bin\WinVoicenotesHelper.exe" -static

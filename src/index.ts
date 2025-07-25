@@ -1,7 +1,7 @@
 import os from "os";
-import {MacKeyServer} from "./ts/MacKeyServer";
-import {WinKeyServer} from "./ts/WinKeyServer";
-import {X11KeyServer} from "./ts/X11KeyServer";
+import {MacVoicenotesHelper} from "./ts/MacVoicenotesHelper";
+import {WinVoicenotesHelper} from "./ts/WinVoicenotesHelper";
+import {X11VoicenotesHelper} from "./ts/X11VoicenotesHelper";
 import {IConfig} from "./ts/_types/IConfig";
 import {IGlobalKeyDownMap} from "./ts/_types/IGlobalKeyDownMap";
 import {IGlobalKeyListener} from "./ts/_types/IGlobalKeyListener";
@@ -45,19 +45,19 @@ export class GlobalKeyboardListener {
         this.config = config;
         switch (os.platform()) {
             case "win32":
-                this.keyServer = new WinKeyServer(this.baseListener, {
+                this.keyServer = new WinVoicenotesHelper(this.baseListener, {
                     ...config.windows,
                     title: config.title,
                 });
                 break;
             case "darwin":
-                this.keyServer = new MacKeyServer(this.baseListener, {
+                this.keyServer = new MacVoicenotesHelper(this.baseListener, {
                     ...config.mac,
                     title: config.title,
                 });
                 break;
             case "linux":
-                this.keyServer = new X11KeyServer(this.baseListener, {
+                this.keyServer = new X11VoicenotesHelper(this.baseListener, {
                     ...config.x11,
                     title: config.title,
                 });
