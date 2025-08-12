@@ -13,8 +13,8 @@
         "build": "tsc",
         "test": "node build/test.js",
         "compile-win": ".\\scripts\\compile-win.bat",
-        "compile-mac-old": "swiftc src/bin/MacVoicenotesHelper/Sources/main.swift -o bin/MacVoicenotesHelper",
-        "compile-mac": "chmod +x scripts/compile-mac.sh && cd src/bin/MacVoicenotesHelper && ../../../scripts/compile-mac.sh",
+        "compile-mac": "swiftc src/bin/MacVoicenotesHelper/Sources/main.swift -o bin/MacVoicenotesHelper",
+        "compile-mac2": "chmod +x scripts/compile-mac.sh && cd src/bin/MacVoicenotesHelper && ../../../scripts/compile-mac.sh",
         "compile-x11": "scripts/compile-x11.sh",
         "prepare": "npm run build"
     },
