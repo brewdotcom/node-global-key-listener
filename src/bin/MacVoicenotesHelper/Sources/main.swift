@@ -292,9 +292,7 @@ let mouseEventMask =
   | (1 << CGEventType.otherMouseDown.rawValue)
   | (1 << CGEventType.otherMouseUp.rawValue)
 
-let eventMask =
-  keyEventMask
-  | mouseEventMask
+let eventMask = keyEventMask // | mouseEventMask // mouse events are not needed
 
 
 //Create the event tap using [CGEvent.tapCreate](https://developer.apple.com/documentation/coregraphics/cgevent/1454426-tapcreate)
