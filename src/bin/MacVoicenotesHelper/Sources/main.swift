@@ -54,6 +54,7 @@ import Darwin.C
 
 //Import of CGEvent, CGEventTapProxy, CGEventType, CGEvent, ...
 import Foundation
+import CoreGraphics
 
 // How long to wait before timing out a key response
 let timeoutTime: Int64 = 30;
